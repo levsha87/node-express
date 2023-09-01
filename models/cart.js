@@ -42,4 +42,29 @@ export default class Cart {
             throw error;
         }
     }
+
+    static async remove(id) {
+        const cart = await Cart.fetch();
+
+        const idx = cart.courses.findIndex(c => c.id === id)
+        const course = cart.courses[idx];
+
+        if (course.count === 1) {
+            cart.courses = cart.courses.filter(c => c.id !== id);
+        } else {
+            cart.courses[idx].count--;
+        }
+
+        cart.price -= course.price;
+
+        try {
+            await fs.promises.writeFile(
+                p, JSON.stringify(cart), 'utf-8'
+            )
+
+            return cart;
+        } catch (err) {
+            throw err;
+        }
+    }
 }
