@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import express from 'express';
 import mongoose from "mongoose";
 import path from "path";
@@ -14,6 +15,7 @@ import User from "./models/user.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const hbs = create({
@@ -44,10 +46,7 @@ app.use('/orders', ordersRoutes);
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-    const DB_URL = 'mongodb+srv://rmlevsha:gYp0EF1GYgu6Dv4f@cluster0.g7upnwb.mongodb.net/shop';
-    await mongoose.connect(DB_URL, {
-        useNewUrlParser: true
-    });
+    await mongoose.connect(process.env.DB_URI);
     const candidate = await User.findOne();
     if (!candidate) {
         const user = new User({
@@ -66,7 +65,6 @@ db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
     console.log("Connected successfully");
 });
-const PASSWORD = 'gYp0EF1GYgu6Dv4f';
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
