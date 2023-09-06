@@ -46,7 +46,9 @@ app.use('/orders', ordersRoutes);
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-    await mongoose.connect(process.env.DB_URI);
+    const connectionUrl = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`;
+
+    await mongoose.connect(connectionUrl);
     const candidate = await User.findOne();
     if (!candidate) {
         const user = new User({
