@@ -1,5 +1,6 @@
 import {Router} from "express";
 import Course from "../models/course.js";
+import auth from "../middleware/auth.js";
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
     });
 })
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', auth, async (req, res) => {
     if (!req.query.allow) {
         return res.redirect('/');
     }
@@ -23,7 +24,7 @@ router.get('/:id/edit', async (req, res) => {
     })
 })
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', auth, async (req, res) => {
     try {
         const {id} = req.body;
         delete req.body.id;
@@ -35,7 +36,7 @@ router.post('/edit', async (req, res) => {
     }
 })
 
-router.post('/remove', async (req, res) => {
+router.post('/remove', auth, async (req, res) => {
     try {
         await Course.deleteOne({
             _id: req.body.id,
