@@ -8,6 +8,8 @@ import {create} from 'express-handlebars';
 import {allowInsecurePrototypeAccess} from '@handlebars/allow-prototype-access';
 import session from 'express-session';
 import {default as connectMongoDBSession} from 'connect-mongodb-session';
+import csrf from 'csurf';
+import flash from 'connect-flash';
 
 import homeRoutes from './routes/home.js';
 import addRoutes from './routes/add.js'
@@ -16,8 +18,8 @@ import cartRoutes from "./routes/cart.js";
 import ordersRoutes from "./routes/orders.js"
 import authRoutes from "./routes/auth.js"
 
-import User from "./models/user.js";
 import varMiddleware from "./middleware/variables.js";
+import userMiddleware from "./middleware/user.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,8 +51,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store
-}))
+}));
+app.use(csrf());
+app.use(flash());
 app.use(varMiddleware);
+app.use(userMiddleware);
 
 app.use('/', homeRoutes);
 app.use('/courses', coursesRoutes);
